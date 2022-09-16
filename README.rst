@@ -69,8 +69,8 @@ Arguments
     [--version]
     If specified, print version number and exit. 
 
-[--langdetect]
-If specified, print lang on image and exit.
+    [--langdetect]
+    If specified, print lang on image and exit.
 
 
 Getting inline help is:
