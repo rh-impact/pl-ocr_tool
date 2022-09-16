@@ -18,7 +18,8 @@ Abstract
 --------
 
 An application that can take images as input and identify and extract written text from them.
-This tool is for doctors.
+Idea users of this tool includes doctors, healthcare professionals or anyone familiar with the ChRIS project
+
 
 Description
 -----------
@@ -67,6 +68,9 @@ Arguments
     
     [--version]
     If specified, print version number and exit. 
+
+[--langdetect]
+If specified, print lang on image and exit.
 
 
 Getting inline help is:
