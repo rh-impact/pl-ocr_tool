@@ -25,8 +25,8 @@ Description
 -----------
 
 
-``ocr_tool`` is a *ChRIS ds-type* application that takes in ... as ... files
-and produces ...
+``ocr_tool`` is a *ChRIS ds-type* application that takes in images as  files
+and produces text.
 
 
 Usage
