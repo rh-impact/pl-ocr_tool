@@ -26,6 +26,11 @@ LABEL maintainer="codificat <pep@redhat.com>"
 
 WORKDIR /usr/local/src
 
+RUN apt update & apt-get -y install tesseract-ocr
+# install languages (separete layer to allow for updating without having to rebuild everything)
+
+RUN apt-get -y install tesseract-ocr-nld tesseract-ocr-spa
+
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
