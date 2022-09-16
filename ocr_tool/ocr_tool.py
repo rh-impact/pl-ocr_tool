@@ -125,8 +125,24 @@ class OcrTool(ChrisApp):
         """
         Define the code to be run by this plugin app.
         """
+        def get_input_output_path(f):
+            outfilename = re.sub('\.\w+$', '.txt', f)
+            input_path = os.path.join(options.inputdir, f)
+            output_path = os.path.join(options.outputdir, outfilename)
+            return input_path, output_path
+
         print(Gstr_title)
         print('Version: %s' % self.get_version())
+        inputdir = options.inputdir
+        outputdir = options.outputdir
+        print("Converting images in %s to text in %s" % (inputdir, outputdir))
+
+        for f in os.listdir(inputdir):
+            img, txt = get_input_output_path(f)
+            custom_config = r'-l eng --psm 6'
+            contents = pytesseract.image_to_string(img, config=custom_config)
+            with open(txt, "w") as f:
+                f.write(contents)
 
     def show_man_page(self):
         """
