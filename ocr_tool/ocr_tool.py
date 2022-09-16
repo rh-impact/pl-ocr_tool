@@ -11,6 +11,8 @@
 from chrisapp.base import ChrisApp
 import pytesseract
 import os, re
+from langdetect import detect_langs
+import pycountry
 
 Gstr_title = r"""
                  _              _
@@ -131,16 +133,34 @@ class OcrTool(ChrisApp):
             output_path = os.path.join(options.outputdir, outfilename)
             return input_path, output_path
 
+        def convert_lang_code(input):
+            lang = pycountry.languages.get(alpha_2=input)
+            return lang.alpha_3
+
+        def auto_detect_langs(contents):
+            all_detected_langs = list(convert_lang_code(x.lang) for x in detect_langs(contents))
+            if "eng" not in all_detected_langs:
+                all_detected_langs.append("eng")
+            return all_detected_langs
+
+
         print(Gstr_title)
         print('Version: %s' % self.get_version())
         inputdir = options.inputdir
         outputdir = options.outputdir
         print("Converting images in %s to text in %s" % (inputdir, outputdir))
 
+        # TODO, make this an option
+        options.auto_detect_langs = True
+
         for f in os.listdir(inputdir):
             img, txt = get_input_output_path(f)
-            custom_config = r'-l eng --psm 6'
-            contents = pytesseract.image_to_string(img, config=custom_config)
+            contents = pytesseract.image_to_string(img)
+
+            if options.auto_detect_langs:
+                all_detected_langs = auto_detect_langs(contents)
+                custom_config = r'-l %s --psm 6' % "+".join(all_detected_langs)
+                contents = pytesseract.image_to_string(img, config=custom_config)
             with open(txt, "w") as f:
                 f.write(contents)
 
