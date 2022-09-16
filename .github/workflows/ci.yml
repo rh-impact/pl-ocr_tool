@@ -56,8 +56,10 @@ jobs:
         id: determine
         env:
           git_tag: ${{ steps.git_info.outputs.tag }}
+          org_name: codificat  # FIXME: hardcoded to match repo secrets
         run: |
-          repo="${GITHUB_REPOSITORY,,}"  # to lower case
+          repository="${GITHUB_REPOSITORY/${{github.repository_owner}}/$org_name}"
+          repo="${repository,,}"  # to lower case
           # if build triggered by tag, use tag name
           tag="${git_tag:-latest}"
           registry="${REGISTRY_NAME:-quay.io}"
