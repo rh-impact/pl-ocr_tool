@@ -122,6 +122,9 @@ class OcrTool(ChrisApp):
         Define the CLI arguments accepted by this plugin app.
         Use self.add_argument to specify a new app argument.
         """
+        print("defining")
+        help_str = "language to use for OCR detection (default is auto). Multiple languages can be provided (i.e. eng+spa for English and/or Spanish)"
+        self.add_argument("--lang", dest='lang', default='auto', action='store', type=str, help=help_str, optional=True)
 
     def run(self, options):
         """
@@ -143,24 +146,27 @@ class OcrTool(ChrisApp):
                 all_detected_langs.append("eng")
             return all_detected_langs
 
-
         print(Gstr_title)
         print('Version: %s' % self.get_version())
         inputdir = options.inputdir
         outputdir = options.outputdir
-        print("Converting images in %s to text in %s" % (inputdir, outputdir))
+        print("Converting images in '%s' to text in '%s'" % (inputdir, outputdir))
 
-        # TODO, make this an option
-        options.auto_detect_langs = True
+        if options.lang == "auto":
+            print("Will auto-detect language for OCR")
+        else:
+            print("Will use %s as language for OCR" % options.lang)
 
         for f in os.listdir(inputdir):
             img, txt = get_input_output_path(f)
-            contents = pytesseract.image_to_string(img)
+            print("Converting '%s' to '%s'" % (img, txt))
+            if options.lang == "auto":
+                contents = pytesseract.image_to_string(img)
+                options.lang = "+".join(auto_detect_langs(contents))
 
-            if options.auto_detect_langs:
-                all_detected_langs = auto_detect_langs(contents)
-                custom_config = r'-l %s --psm 6' % "+".join(all_detected_langs)
-                contents = pytesseract.image_to_string(img, config=custom_config)
+            custom_config = r'-l %s --psm 6' % options.lang
+            contents = pytesseract.image_to_string(img, config=custom_config)
+
             with open(txt, "w") as f:
                 f.write(contents)
 
