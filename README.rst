@@ -17,8 +17,8 @@ pl-ocr_tool
 Abstract
 --------
 
-An application that can take images as input and identify and extract written text from them
-
+An application that can take images as input and identify and extract written text from them.
+This tool is for doctors.
 
 Description
 -----------
